@@ -20,33 +20,30 @@ using namespace std;
 class WorkWithFile {
 private:
     char* dataOfFile;
-    void readFromFile(const char* fileName) {    //функция чтения из файла
+    void readFromFile(const char* fileName) {
+        dataOfFile = new char[1000]{'\0'};
         FILE* fLog;
-        char data[255] = "";
         fLog = fopen(fileName, "r");
-        for (int i = 0; fscanf(fLog, "%c\t", &data[i]) != EOF; i++) {}
+        for (int i = 0; fscanf(fLog, "%c\t", &dataOfFile[i]) != EOF; i++) {}
         fclose(fLog);
-        dataOfFile = data;
+        strcat(dataOfFile, "\0");
     }	
-    void prepareTestFile(const char* fileName) {	//функция для создания тестового файла
-        char data[255] = "";
-        strcpy(data, dataOfFile);
+    void prepareTestFile(const char* fileName) {
         FILE* fLog;
         fLog = fopen(fileName, "a");
         int size = 0;
-        int used[255];
-        for (; data[size] != NULL; size++) {
+        int used[1000];
+        for (; dataOfFile[size] != NULL; size++) {
             used[size] = 0;
         }
-
         int min = 0;
         char sym, comp;
         for (; min < size; min++) {
             if (used[min] != 1) {
-                sym = data[min];
+                sym = dataOfFile[min];
                 int count = 0;
                 for (int i = 0; i < size; i++) {
-                    comp = data[i];
+                    comp = dataOfFile[i];
                     if (sym == comp) {
                         count++;
                         used[i] = 1;
@@ -63,7 +60,9 @@ public:
     WorkWithFile() {
         writeStatInfoToFile("result_sourceFile_task1");
     }
-    ~WorkWithFile() {}
+    ~WorkWithFile() {
+        delete dataOfFile;
+    }
 
     void writeStatInfoToFile(const char* outFile) {
         readFromFile("sourceFile_task1");
@@ -86,15 +85,13 @@ char* convertDecToBin(int number) {
         j++;
     }
     j--;
-    for (int i = 0; i < j; i++, j--)
-        swap(c[i], c[j]);
-    char add[2] = "";
-    char ans[65] = "";
-    for (int i = 0; i < 64; i++) {
-        _itoa(c[i], add, 10);
-        strcat(ans, add);
+    char add[64] = "";
+    char* ans;
+    for (int i = 0; j > 0; j--, i++) {
+        add[i] = (int)'0' + c[j];
     }
-    strcat(ans, "\0");
+    strcat(add, "\0");
+    ans = add;
     return ans;
 }
 
