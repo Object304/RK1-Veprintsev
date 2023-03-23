@@ -250,41 +250,112 @@ struct Node {
     int nameNode;
     static int countNodes;
 };
+int Node::countNodes = 0;
 class LinkedList {
 private:
     Node* Head;
     Node* Tail;
 public:
     LinkedList() {
-        for (int i = 0; i < 5; i++) {
-            push_back(i);
+        Head = nullptr;
+        Tail = nullptr;
+    }
+    ~LinkedList() {
+        Node* el = Tail;
+        Node* trash = el;
+        for (int i = 0; i < Node::countNodes; i++) {
+            trash = el;
+            el = el->prev;
+            delete trash;
+        }
+        Node::countNodes = 0;
+    }
+
+    void push_back(int nameNode) {
+        nameNode++;
+        Node::countNodes++;
+        if (Head == nullptr) {
+            Head = new Node();
+            Tail = new Node();
+            Head->prev = nullptr;
+            Head->next = Tail;
+            Tail->prev = Head;
+            Tail->next = nullptr;
+            Head->nameNode = nameNode;
+            return;
+        }
+        Tail->next = new Node();
+        Node* temp = Tail->next;
+        Tail->nameNode = nameNode;
+        temp->prev = Tail;
+        temp->next = nullptr;
+        Tail = temp;
+    }
+    void insert(int nameNode, int position) {
+        if (position > Node::countNodes || position < 0) {
+            cout << "Wrong position" << endl;
+        }
+        else {
+            Node* el = new Node();
+            el->prev = Head;
+            el->next = Head->next;
+            for (int i = 0; i < position; i++) {
+                el->prev = el->prev->next;
+                el = el->next;
+            }
+            el->nameNode = nameNode;
+            Node::countNodes++;
         }
     }
-    ~LinkedList() {}
-
-    //void append(List <T>& lst, T el) {
-    //    ListNode <T>* l = createnode(el);
-    //    if (lst.head == nullptr)
-    //        lst.head = l;
-    //    else {
-    //        ListNode <T>* p = lst.head;
-    //        while (p->next != nullptr)
-    //            p = p->next;
-    //        p->next = l;
-    //    }
-    //    lst.len++;
-    //}
-    
-    void push_back(int nameNode) {
-        int ar[5] = { 11, 12, 13, 14, 15 };
-        //Node* l = 11;
+    void writeToFileFromTail() {
+        FILE* fLog;
+        fLog = fopen("result_task6", "a");
+        Node* el = Tail->prev;
+        for (int i = 0; i < Node::countNodes; i++) {
+            fprintf(fLog, "%d;\t", el->nameNode);
+            el = el->prev;
+        }
+        fprintf(fLog, "\n");
+        fclose(fLog);
     }
-    void writeToFileFromTail() {}
-    void writeToFileFromHead() {}
+    void writeToFileFromHead() {
+        FILE* fLog;
+        fLog = fopen("result_task6", "a");
+        Node* el = Head;
+        for (int i = 0; i < Node::countNodes; i++) {
+            fprintf(fLog, "%d;\t", el->nameNode);
+            el = el->next;
+        }
+        fprintf(fLog, "\n");
+        fclose(fLog);
+    }
 };
 
 void task_6(void) {
     LinkedList lst;
+    int c[5] = { 7, 4, 3, 8, 5 };
+    for (int i = 0; i < 5; i++) {
+       lst.push_back(c[i]);
+    }
+    lst.writeToFileFromHead();
+    lst.writeToFileFromTail();
+}
+
+// 7
+
+void task_7(void) {
+    LinkedList lst;
+    int c[5] = { 7, 4, 3, 8, 5 };
+    for (int i = 0; i < 5; i++) {
+        lst.push_back(c[i]);
+    }
+    int a = -7;
+    int b = -2;
+    int d = -8;
+    lst.insert(a, 2);
+    lst.insert(b, 5);
+    lst.insert(d, 0);
+    lst.writeToFileFromHead();
 }
 
 // 8
@@ -341,15 +412,19 @@ void task_6(void) {
 
 int main()
 {
-    task_1();
+    //task_1();
 
-    task_2();
+    //task_2();
 
-    task_3();
+    //task_3();
 
-    task_4();
+    //task_4();
 
-    task_5();
+    //task_5();
+
+    //task_6();
+
+    task_7();
 
     return 0;
 }
