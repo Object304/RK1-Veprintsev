@@ -33,7 +33,7 @@ private:
         fLog = fopen(fileName, "a");
         int size = 0;
         int used[1000];
-        for (; dataOfFile[size] != NULL; size++) {
+        for (; dataOfFile[size] != '\0'; size++) {
             used[size] = 0;
         }
         int min = 0;
@@ -131,7 +131,7 @@ char* convertBinToHex(const char* binNum) {
     strcat(right, binNum);
     binNum = right;
     char hex[255] = "";
-    for (int j = 4; binNum[j - 1] != NULL; j += 4) {
+    for (int j = 4; binNum[j - 1] != '\0'; j += 4) {
         char temp[5] = "";
         for (int i = 0; i < 4; i++) {
             temp[i] = binNum[j - 4 + i];
@@ -297,11 +297,28 @@ public:
         }
         else {
             Node* el = new Node();
-            el->prev = Head;
-            el->next = Head->next;
+            Node* tempN;
+            Node* tempP;
+            el->next = Head;
+            Head = el;
             for (int i = 0; i < position; i++) {
-                el->prev = el->prev->next;
-                el = el->next;
+                if (i == 0) {
+                    tempN = el->next;
+                    el->next = el->next->next;
+                    tempN->next = el;
+                    el->prev = tempN;
+                    Head = tempN;
+                }
+                else {
+                    tempN = el->next;
+                    tempP = el->prev;
+                    el->next = el->next->next;
+                    el->next->prev = el;
+                    tempN->next = el;
+                    el->prev = tempN;
+                    tempP->next = tempN;
+                    tempN->prev = tempP;
+                }
             }
             el->nameNode = nameNode;
             Node::countNodes++;
@@ -345,16 +362,15 @@ void task_6(void) {
 
 void task_7(void) {
     LinkedList lst;
-    int c[5] = { 7, 4, 3, 8, 5 };
+    int c[5] = { 7, 4, 3, 8, 5 }; // должно получиться (-8 8 5 -7 4 9 -2 6)
     for (int i = 0; i < 5; i++) {
         lst.push_back(c[i]);
     }
-    int a = -7;
-    int b = -2;
-    int d = -8;
-    lst.insert(a, 2);
-    lst.insert(b, 5);
-    lst.insert(d, 0);
+    lst.insert(-7, 2);
+    lst.insert(-2, 5);
+    lst.insert(-8, 0);
+    lst.insert(999, -1); // некорректный ввод
+    lst.insert(999, 9); // некорректный ввод
     lst.writeToFileFromHead();
 }
 
@@ -412,17 +428,17 @@ void task_7(void) {
 
 int main()
 {
-    //task_1();
+    task_1();
 
-    //task_2();
+    task_2();
 
-    //task_3();
+    task_3();
 
-    //task_4();
+    task_4();
 
-    //task_5();
+    task_5();
 
-    //task_6();
+    task_6();
 
     task_7();
 
