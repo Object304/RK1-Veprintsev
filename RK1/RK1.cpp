@@ -157,34 +157,17 @@ char* convertBinToHex(const char* binNum) {
     return ans;
 }
 
-void writeToFile(const char* fileName, int writeAppend, const char* hexNum, const char* binNum) {
-    char hex[255];
-    strcpy(hex, hexNum);
-    FILE* fLog;
-    fLog = fopen(fileName, "a");
-    fprintf(fLog, "{");
-    for (int i = 0; i < writeAppend; i++)
-        fprintf(fLog, "%c", binNum[i]);
-    fprintf(fLog, "}");
-    fprintf(fLog, "\t");
-    fprintf(fLog, "{");
-    for (int i = 0; i < writeAppend / 4 + writeAppend % 4; i++)
-        fprintf(fLog, "%c", hex[i]);
-    fprintf(fLog, "}");
-    fprintf(fLog, "\n");
-    fclose(fLog);
-}
-
 void task_3(void) {
     const char* bin1 = "11001000110101111";  // не хватает 3-х нулей слева (191AF)
     char* ans = convertBinToHex(bin1);
-    writeToFile("result_task3", strlen(bin1), ans, bin1);
+    char name[] = "result_task2";
+    writeToFile(name[0], ans);
     const char* bin2 = "1111111111111111111111111111111111111111111111111111111111111000"; // 64 бита (FFFFFFFFFFFFFFF8)
     ans = convertBinToHex(bin2);
-    writeToFile("result_task3", strlen(bin2), ans, bin2);
+    writeToFile(name[0], ans);
     const char* bin3 = "10000001"; // 81
     ans = convertBinToHex(bin3);
-    writeToFile("result_task3", strlen(bin3), ans, bin3);
+    writeToFile(name[0], ans);
 }
 
 // 4
@@ -211,24 +194,26 @@ void randFill(float* ar, int N) {
     }
 }
 
-void writeToFile5(int num, float val) {
+void writeToFile5(vector<float> avg) {
     FILE* fLog;
     fLog = fopen("result_task5", "a");
-    fprintf(fLog, "[%d]:\t[%f]\n", num, val);
+    for (int i = 0; i < avg.size(); i++) {
+        fprintf(fLog, "[%d]:\t[%f]\n", i, avg[i]);
+    }
     fclose(fLog);
 }
 
-vector<pair<int/*номер строки*/, float /*среднее значение*/>> averStr2DArray(const float* ar, int colCount, int rowCount) {
-    vector<pair<int, float>> pairs;
+vector<float> averStr2DArray(const float* ar, int colCount, int rowCount) {
+    vector<float> avgs;
     for (int i = 0; i < rowCount; i++) {
         float sum = 0;
         for (int j = 0; j < colCount; j++) {
             sum += *(ar + i * colCount + j);
         }
         float avg = sum / colCount;
-        pairs.emplace_back(i, avg);
+        avgs.emplace_back(avg);
     }
-    return pairs;
+    return avgs;
 }
 
 void task_5(void) {
@@ -236,10 +221,8 @@ void task_5(void) {
     for (int i = 0; i < 5; i++) {
         randFill(ar[i], 7);
     }
-    vector<pair<int, float>> pairs = averStr2DArray(*ar, 7, 5);
-    for (auto p : pairs) {
-        writeToFile5(p.first, p.second);
-    }
+    vector<float> avg = averStr2DArray(*ar, 7, 5);
+    writeToFile5(avg);
 }
 
 // 6
@@ -247,8 +230,22 @@ void task_5(void) {
 struct Node {
     Node* next;
     Node* prev;
-    int nameNode;
+    int nameNode;	//имя узла
     static int countNodes;
+    Node() {
+        next = nullptr;
+        prev = nullptr;
+        this->nameNode = 0;
+    }
+    Node(int _nameNode) {
+        countNodes++;
+        this->nameNode = _nameNode + 1;
+        next = nullptr;
+        prev = nullptr;
+    }
+    ~Node() {
+        countNodes--;
+    }
 };
 int Node::countNodes = 0;
 class LinkedList {
@@ -257,6 +254,10 @@ private:
     Node* Tail;
 public:
     LinkedList() {
+        /*this->Head->next = Tail;
+        this->Tail->prev = Head;
+        Head->prev = nullptr;
+        Tail->next = nullptr;*/
         Head = nullptr;
         Tail = nullptr;
     }
@@ -270,58 +271,50 @@ public:
         }
         Node::countNodes = 0;
     }
-
     void push_back(int nameNode) {
-        nameNode++;
-        Node::countNodes++;
         if (Head == nullptr) {
-            Head = new Node();
+            Head = new Node(nameNode);
             Tail = new Node();
             Head->prev = nullptr;
             Head->next = Tail;
             Tail->prev = Head;
             Tail->next = nullptr;
-            Head->nameNode = nameNode;
             return;
         }
-        Tail->next = new Node();
-        Node* temp = Tail->next;
-        Tail->nameNode = nameNode;
+        Node* temp = new Node(nameNode);
+        Tail->next = temp;
+        Tail->nameNode = temp->nameNode;
         temp->prev = Tail;
         temp->next = nullptr;
         Tail = temp;
     }
     void insert(int nameNode, int position) {
-        if (position > Node::countNodes || position < 0) {
-            cout << "Wrong position" << endl;
+        if (position < 0 || position > Node::countNodes) {
+            return;
         }
-        else {
-            Node* el = new Node();
-            Node* tempN;
-            Node* tempP;
-            el->next = Head;
-            Head = el;
-            for (int i = 0; i < position; i++) {
-                if (i == 0) {
-                    tempN = el->next;
-                    el->next = el->next->next;
-                    tempN->next = el;
-                    el->prev = tempN;
-                    Head = tempN;
-                }
-                else {
-                    tempN = el->next;
-                    tempP = el->prev;
-                    el->next = el->next->next;
-                    el->next->prev = el;
-                    tempN->next = el;
-                    el->prev = tempN;
-                    tempP->next = tempN;
-                    tempN->prev = tempP;
-                }
+        Node* el = new Node(nameNode);
+        Node* tempN;
+        Node* tempP;
+        el->next = Head;
+        Head = el;
+        for (int i = 0; i < position; i++) {
+            if (i == 0) {
+                tempN = el->next;
+                el->next = el->next->next;
+                tempN->next = el;
+                el->prev = tempN;
+                Head = tempN;
             }
-            el->nameNode = nameNode;
-            Node::countNodes++;
+            else {
+                tempN = el->next;
+                tempP = el->prev;
+                el->next = el->next->next;
+                el->next->prev = el;
+                tempN->next = el;
+                el->prev = tempN;
+                tempP->next = tempN;
+                tempN->prev = tempP;
+            }
         }
     }
     void writeToFileFromTail() {
@@ -362,7 +355,7 @@ void task_6(void) {
 
 void task_7(void) {
     LinkedList lst;
-    int c[5] = { 7, 4, 3, 8, 5 }; // должно получиться (-8 8 5 -7 4 9 -2 6)
+    int c[5] = { 7, 4, 3, 8, 5 }; // должно получиться (-7 8 5 -6 4 9 -1 6)
     for (int i = 0; i < 5; i++) {
         lst.push_back(c[i]);
     }
@@ -373,6 +366,11 @@ void task_7(void) {
     lst.insert(999, 9); // некорректный ввод
     lst.writeToFileFromHead();
 }
+
+//void task_test(void) {
+//    LinkedList lst;
+//    lst.insert(-8, 0);
+//}
 
 // 8
 //
@@ -441,6 +439,6 @@ int main()
     task_6();
 
     task_7();
-
+    //task_test();
     return 0;
 }
