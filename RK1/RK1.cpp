@@ -232,7 +232,7 @@ void task_5(void) {
 struct Node {
     Node* next;
     Node* prev;
-    int nameNode;	//имя узла
+    int nameNode;
     static int countNodes;
     Node() {
         next = nullptr;
@@ -368,81 +368,44 @@ void task_7(void) {
 
 // 8
 
-static int newsubj = 5;
 class StudentInfo {
 private:
     char num[4] = "304";
-    std::tuple<std::string /*фамилия*/, std::string /*имя*/, char* /*№ студ билета*/> infoStudent = make_tuple("Veprinzev", "Saveliy", num);
-    std::map<string/*название предмета*/, std::pair<std::list<int> /*список оценок*/, float /*средняя оценка*/>> subjMark;
+    std::tuple<std::string, std::string, char*> infoStudent = make_tuple("Veprinzev", "Saveliy", num);
+    std::map<string, std::pair<std::list<int>, float>> subjMark;
 public:
-
-    /*	desription	:	добавления отметки по выбранной дисциплине
-        input		:	subjName - название дисциплины
-                        mark -- оценка,
-                        addSubj - если нет такой дисциплины, то добавить, если addSubj == true
-        output		:	0 - оценка добавлена, 1 - нет такой дисциплины, 2 - была добавлена новая дисциплина
-        author		:
-        date		:
-    */
     int addMark(const string& subjName, int mark, bool addSubj = false) {
         if (addSubj) {
-            newsubj = 5;
             this->addSubj(subjName);
-            if (newsubj == 0) {
-                cout << "2" << endl;
-                newsubj = 5;
-            }
         }
         while (true) {
             if (subjMark.find(subjName) != subjMark.end()) {
-                std::map<string/*название предмета*/, std::pair<std::list<int> /*список оценок*/, float /*средняя оценка*/>>::iterator it;
+                std::map<string, std::pair<std::list<int>, float>>::iterator it;
                 it = subjMark.find(subjName);
                 it->second.first.push_back(mark);
                 it->second.second = getAverMark(subjName);
                 subjMark.emplace(subjName, it->second);
-                cout << "0" << endl;
                 break;
             }
             else {
-                cout << "1" << endl;
                 this->addSubj(subjName);
-                cout << "2" << endl;
                 continue;
             }
         }
         return 0;
     }
-
-    /*	desription	:	добавление новой дисциплины
-        input		:	subjName - название дисциплины
-        output		:	0 - дисциплина добавлена, 1 - такая дисциплина уже есть
-        author		:
-        date		:
-
-    */
     int addSubj(const string& subjName) {
         if (subjMark.find(subjName) == subjMark.end()) {
             subjMark[subjName];
-            cout << "0" << endl;
-            newsubj = 0;
             return 0;
         }
-        cout << "1" << endl;
         return 1;
     }
-
-    /*	desription	:	получение средней оценки по выбранной дисциплине
-        input		:	subjName - название дисциплины
-        output		:	среднее значение оценки, если выбранной дисциплины нет, то вернуть -1
-        author		:
-        date		:
-    */
     float getAverMark(const string& subjName) {
         if (subjMark.find(subjName) == subjMark.end()) {
-            cout << "-1" << endl;
             return -1;
         }
-        std::map<string/*название предмета*/, std::pair<std::list<int> /*список оценок*/, float /*средняя оценка*/>>::iterator it;
+        std::map<string, std::pair<std::list<int>, float>>::iterator it;
         it = subjMark.find(subjName);
         pair <list<int>, float> pairs = it->second;
         list<int> lst = pairs.first;
@@ -455,21 +418,12 @@ public:
         avg /= i;
         return avg;
     }
-
-    /*	desription	:	вывести информацию о студенте, его оценках по предметам в следующем формате
-                        [Student info]\n\t[subj] : [avers,...] -- [averMark]\n
-        input		:	writeFile - true = записать информацию в файл
-                        writeFile - false = вывести информацию в консоль
-        output		:
-        author		:
-        date		:
-    */
     void printInfoStudent(bool writeFile = false) {
         if (writeFile) {
             FILE* fLog;
             fLog = fopen("result_task8", "a");
             fprintf(fLog, "[%s %s %s]\n", get<0>(infoStudent).c_str(), get<1>(infoStudent).c_str(), get<2>(infoStudent));
-            std::map<string/*название предмета*/, std::pair<std::list<int> /*список оценок*/, float /*средняя оценка*/>>::iterator it = subjMark.begin();
+            std::map<string, std::pair<std::list<int>, float>>::iterator it = subjMark.begin();
             for (int i = 0; i < subjMark.size(); i++, it++) {
                 fprintf(fLog, "\t[%s] : ", it->first.c_str());
                 pair <list<int>, float> pairs = it->second;
@@ -487,7 +441,7 @@ public:
             return;
         }
         cout << "[" << get<0>(infoStudent).c_str() << " " << get<1>(infoStudent).c_str() << " " << get<2>(infoStudent) << "]" << endl;
-        std::map<string/*название предмета*/, std::pair<std::list<int> /*список оценок*/, float /*средняя оценка*/>>::iterator it = subjMark.begin();
+        std::map<string, std::pair<std::list<int>, float>>::iterator it = subjMark.begin();
         for (int i = 0; i < subjMark.size(); i++, it++) {
             cout << "\t[" << it->first.c_str() << "] : ";
             pair <list<int>, float> pairs = it->second;
@@ -502,23 +456,11 @@ public:
         }
         cout << endl;
     }
-
-    /*	desription	:	запись данных в файл формата файла
-                            [Фамилия] [имя] : [номер билета]
-                                [дисциплина 1]	:	[оценка 1], [оценка 2],... [оценка N] -- [среднее значение]
-                                [дисциплина 2]	:	[оценка 1], [оценка 2],... [оценка N] -- [среднее значение]
-                                .....
-                                [дисциплина N]	:	[оценка 1], [оценка 2],... [оценка N] -- [среднее значение]
-        input		:
-        output		:	среднее значение оценки
-        author		:
-        date		:
-    */
     void writeAllInfoToFile() {
         FILE* fLog;
         fLog = fopen("result_task8", "a");
         fprintf(fLog, "[%s] [%s] : [%s]\n", get<0>(infoStudent).c_str(), get<1>(infoStudent).c_str(), get<2>(infoStudent));
-        std::map<string/*название предмета*/, std::pair<std::list<int> /*список оценок*/, float /*средняя оценка*/>>::iterator it = subjMark.begin();
+        std::map<string, std::pair<std::list<int>, float>>::iterator it = subjMark.begin();
         for (int i = 0; i < subjMark.size(); i++, it++) {
             fprintf(fLog, "\t[%s] :  ", it->first.c_str());
             pair <list<int>, float> pairs = it->second;
