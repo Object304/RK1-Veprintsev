@@ -41,14 +41,14 @@ void WorkWithFile::prepareTestFile(const char* fileName) {
     fclose(fLog);
 }
 WorkWithFile::WorkWithFile() {
-    writeStatInfoToFile("result_sourceFile_task1");
+    writeStatInfoToFile("result_sourceFile_task1.txt");
 }
 WorkWithFile::~WorkWithFile() {
     delete dataOfFile;
 }
 
 void WorkWithFile::writeStatInfoToFile(const char* outFile) {
-    readFromFile("sourceFile_task1");
+    readFromFile("sourceFile_task1.txt");
     prepareTestFile(outFile);
 }
 
@@ -145,7 +145,7 @@ void randFill(float* ar, int N) {
 
 void writeToFile5(std::vector<float> avg) {
     FILE* fLog;
-    fLog = fopen("result_task5", "a");
+    fLog = fopen("result_task5.txt", "a");
     for (int i = 0; i < avg.size(); i++) {
         fprintf(fLog, "[%d]:\t[%f]\n", i, avg[i]);
     }
@@ -251,7 +251,7 @@ void LinkedList::insert(int nameNode, int position) {
 }
 void LinkedList::writeToFileFromTail() {
     FILE* fLog;
-    fLog = fopen("result_task6", "a");
+    fLog = fopen("result_task6.txt", "a");
     Node* el = Tail->prev;
     for (int i = 0; i < Node::countNodes; i++) {
         fprintf(fLog, "%d;\t", el->nameNode);
@@ -262,7 +262,7 @@ void LinkedList::writeToFileFromTail() {
 }
 void LinkedList::writeToFileFromHead() {
     FILE* fLog;
-    fLog = fopen("result_task6", "a");
+    fLog = fopen("result_task6.txt", "a");
     Node* el = Head;
     for (int i = 0; i < Node::countNodes; i++) {
         fprintf(fLog, "%d;\t", el->nameNode);
@@ -322,7 +322,7 @@ float StudentInfo::getAverMark(const string& subjName) {
 void StudentInfo::printInfoStudent(bool writeFile) {
     if (writeFile) {
         FILE* fLog;
-        fLog = fopen("result_task8", "a");
+        fLog = fopen("result_task8.txt", "a");
         fprintf(fLog, "[%s %s %s]\n", get<0>(infoStudent).c_str(), get<1>(infoStudent).c_str(), get<2>(infoStudent));
         std::map<string, std::pair<std::list<int>, float>>::iterator it = subjMark.begin();
         for (int i = 0; i < subjMark.size(); i++, it++) {
@@ -359,7 +359,7 @@ void StudentInfo::printInfoStudent(bool writeFile) {
 }
 void StudentInfo::writeAllInfoToFile() {
     FILE* fLog;
-    fLog = fopen("result_task8", "a");
+    fLog = fopen("result_task8.txt", "a");
     fprintf(fLog, "[%s] [%s] : [%s]\n", get<0>(infoStudent).c_str(), get<1>(infoStudent).c_str(), get<2>(infoStudent));
     std::map<string, std::pair<std::list<int>, float>>::iterator it = subjMark.begin();
     for (int i = 0; i < subjMark.size(); i++, it++) {

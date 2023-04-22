@@ -7,7 +7,7 @@ void task_1(void) {
 
 void task_2(void) {
     int a = -4, b = 255, c = -1984;
-    char name[] = "result_task2\0";
+    char name[] = "result_task2.txt";
     char* ans = convertDecToBin(a);
     writeToFile(name[0], ans);
     ans = convertDecToBin(b);
@@ -19,7 +19,7 @@ void task_2(void) {
 void task_3(void) {
     const char* bin1 = "11001000110101111";  // не хватает 3-х нулей слева (191AF)
     char* ans = convertBinToHex(bin1);
-    char name[] = "result_task2";
+    char name[] = "result_task2.txt";
     writeToFile(name[0], ans);
     const char* bin2 = "1111111111111111111111111111111111111111111111111111111111111000"; // 64 бита (FFFFFFFFFFFFFFF8)
     ans = convertBinToHex(bin2);
