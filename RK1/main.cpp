@@ -88,6 +88,19 @@ void task_8(void) {
     dat.writeAllInfoToFile();
 }
 
+void task_9(void) {
+    string s1 = "((()))[<<>>]{((()))}",
+        s2 = "][",
+        s3 = "[{]}",
+        s4 = "(()",
+        s5 = "(<<>{(())}[<<<>{}>()>]>)";
+    cout << s1 << " -- " << boolalpha << check(s1) << endl;
+    cout << s2 << " -- " << boolalpha << check(s2) << endl;
+    cout << s3 << " -- " << boolalpha << check(s3) << endl;
+    cout << s4 << " -- " << boolalpha << check(s4) << endl;
+    cout << s5 << " -- " << boolalpha << check(s5) << endl;
+}
+
 int main()
 {
     task_1();
@@ -98,5 +111,6 @@ int main()
     task_6();
     task_7();
     task_8();
+    task_9();
     return 0;
 }

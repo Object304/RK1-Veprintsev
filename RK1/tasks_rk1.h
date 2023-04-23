@@ -14,14 +14,13 @@
 #include <map>
 #include <list>
 #include <iterator>
-
-#ifndef UNTITLED_TASKS_RK1_H
-#define UNTITLED_TASKS_RK1_H
+#include <string>
 
 using namespace std;
 
 // 1
 
+void task_1(void);
 class WorkWithFile {
 private:
     char* dataOfFile;
@@ -35,25 +34,31 @@ public:
 
 // 2
 
+void task_2(void);
 char* convertDecToBin(int number);
 void writeToFile(const char& fileName, const char* strNum);
 
 // 3
 
+void task_3(void);
 char* convertBinToHex(const char* binNum);
 
 // 4 
 
+void task_4(void);
 void buildTree(int height);
 
 // 5
 
+void task_5(void);
 void randFill(float* ar, int N);
 void writeToFile5(vector<float> avg);
 vector<float> averStr2DArray(const float* ar, int colCount, int rowCount);
 
 // 6, 7
 
+void task_6(void);
+void task_7(void);
 struct Node;
 class LinkedList {
 private:
@@ -70,6 +75,7 @@ public:
 
 // 8
 
+void task_8(void);
 class StudentInfo {
 private:
     char num[4] = "304";
@@ -82,4 +88,52 @@ public:
     void printInfoStudent(bool writeFile = false);
     void writeAllInfoToFile();
 };
-#endif
+
+// 9
+
+void task_9(void);
+template<class T>
+class IData {
+protected:
+	T* ar;
+	int size1;
+	int datalen;
+public:
+	virtual bool addToEnd(T el) {
+		return false;
+	}
+	virtual bool getFromEnd(T& el) {
+		return false;
+	}
+	IData() {
+		datalen = 0;
+		size1 = 16;
+		ar = new T[16];
+	}
+	~IData() {
+		delete[] ar;
+	}
+};
+
+template<class T>
+class Filo : public IData<T> {	
+public:
+	Filo() : IData<T>() {}
+
+	bool addToEnd(T el) {
+		if (IData<T>::datalen == IData<T>::size1) {
+			return false;
+		}
+		IData<T>::ar[IData<T>::datalen++] = el;
+		return true;
+	}
+
+	bool getFromEnd(T& el) {
+		if (IData<T>::datalen == 0) {
+			return false;
+		}
+		el = IData<T>::ar[--IData<T>::datalen];
+		return true;
+	}
+};
+bool check(string brack);

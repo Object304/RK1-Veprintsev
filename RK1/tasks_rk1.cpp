@@ -377,3 +377,27 @@ void StudentInfo::writeAllInfoToFile() {
     fprintf(fLog, "\n");
     fclose(fLog);
 }
+
+// 9
+
+bool check(string s) {
+    map<char, char> bracket = { {'[', ']'}, {'(', ')'}, {'{', '}'}, {'<', '>'} };
+    map<char, int> open = { {'[', 1}, {'(', 1}, {'{', 1}, {'<', 1} };
+    map<char, int> close = { {']', 1}, {')', 1}, {'}', 1}, {'>', 1} };
+    Filo<char> work;
+    char fromStack;
+    for (int i = 0; i < s.size(); i++) {
+        if (open[s[i]] == 1) {
+            work.addToEnd(s[i]);
+        }
+        if (close[s[i]] == 1) {
+            work.getFromEnd(fromStack);
+            if (bracket[fromStack] == s[i])
+                continue;
+            return false;
+        }
+    }
+    if (work.getFromEnd(fromStack))
+        return false;
+    return true;
+}
