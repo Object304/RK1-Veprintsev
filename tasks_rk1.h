@@ -3,7 +3,6 @@
 #include <fstream>
 #include <iostream>
 #include <locale>
-#include <Windows.h>
 #include <cmath>
 #include <iomanip>
 #include <cstring>
