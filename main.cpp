@@ -53,9 +53,9 @@ void task_6(void) {
     lst.writeToFileFromTail();
 }
 
-void task_7(void) {
+void task_7(void) {                 //можно протестировать перегрузку операторов == и [] (у скобок [] есть assert!)
     LinkedList lst;
-    int c[5] = { 7, 4, 3, 8, 5 }; // должно получиться (-7 8 5 -6 4 9 -1 6)
+    int c[5] = { 7, 4, 3, 8, 5 }; // должно получиться (-8;	7;	4;	-7;	3;	8;	-2;	5;)
     for (int i = 0; i < 5; i++) {
         lst.push_back(c[i]);
     }
@@ -63,7 +63,8 @@ void task_7(void) {
     lst.insert(-2, 5);
     lst.insert(-8, 0);
     lst.insert(999, -1); // некорректный ввод
-    lst.insert(999, 9); // некорректный ввод
+    lst.writeToFileFromHead();
+    lst.insert(999, 10); // некорректный ввод
     lst.writeToFileFromHead();
 }
 

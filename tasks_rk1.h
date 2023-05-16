@@ -14,6 +14,7 @@
 #include <list>
 #include <iterator>
 #include <string>
+#include <cassert>
 
 using namespace std;
 
@@ -58,11 +59,20 @@ vector<float> averStr2DArray(const float* ar, int colCount, int rowCount);
 
 void task_6(void);
 void task_7(void);
-struct Node;
+struct Node {
+	Node* next;
+	Node* prev;
+	int nameNode;	//имя узла
+	static int countNodes;
+	Node();
+	Node(int _nameNode);
+	~Node();
+};
 class LinkedList {
 private:
     Node* Head;
     Node* Tail;
+	int size;
 public:
     LinkedList();
     ~LinkedList();
@@ -70,6 +80,8 @@ public:
     void insert(int nameNode, int position);
     void writeToFileFromTail();
     void writeToFileFromHead();
+	int& operator[](int);
+	bool operator==(const LinkedList& el1);
 };
 
 // 8

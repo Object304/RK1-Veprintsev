@@ -167,26 +167,18 @@ vector<float> averStr2DArray(const float* ar, int colCount, int rowCount) {
 
 // 6, 7
 
-struct Node {
-    Node* next;
-    Node* prev;
-    int nameNode;
-    static int countNodes;
-    Node() {
-        next = nullptr;
-        prev = nullptr;
-        this->nameNode = 0;
-    }
-    Node(int _nameNode) {
-        countNodes++;
-        this->nameNode = _nameNode + 1;
-        next = nullptr;
-        prev = nullptr;
-    }
-    ~Node() {
-        countNodes--;
-    }
-};
+Node::~Node() {}
+Node::Node(int _nameNode) {
+    this->nameNode = _nameNode;
+    next = nullptr;
+    prev = nullptr;
+}
+Node::Node() {
+    next = nullptr;
+    prev = nullptr;
+    this->nameNode = countNodes;
+    countNodes++;
+}
 int Node::countNodes = 0;
 LinkedList::LinkedList() {
     Head = new Node();
@@ -195,22 +187,23 @@ LinkedList::LinkedList() {
     Tail->prev = Head;
     Head->prev = nullptr;
     Tail->next = nullptr;
+    size = 0;
 }
 LinkedList::~LinkedList() {
     Node* el = Tail;
     Node* trash = el;
-    for (int i = 0; i < Node::countNodes + 1; i++) {
+    while (el != nullptr) {
         trash = el;
         el = el->prev;
         delete trash;
     }
-    delete el;
-    Node::countNodes = 0;
+    return;
 }
 void LinkedList::push_back(int nameNode) {
-    if (Node::countNodes == 0) {
+    if (size == 0) {
         Node* temp = new Node(nameNode);
         Head->nameNode = temp->nameNode;
+        size++;
         return;
     }
     Node* temp = new Node(nameNode);
@@ -219,9 +212,14 @@ void LinkedList::push_back(int nameNode) {
     temp->prev = Tail;
     temp->next = nullptr;
     Tail = temp;
+    size++;
 }
 void LinkedList::insert(int nameNode, int position) {
-    if (position < 0 || position > Node::countNodes) {
+    if (position < 0 || position > size) {
+        return;
+    }
+    if (position == size) {
+        push_back(nameNode);
         return;
     }
     Node* el = new Node(nameNode);
@@ -248,12 +246,13 @@ void LinkedList::insert(int nameNode, int position) {
             tempN->prev = tempP;
         }
     }
+    size++;
 }
 void LinkedList::writeToFileFromTail() {
     FILE* fLog;
     fLog = fopen("result_task6.txt", "a");
     Node* el = Tail->prev;
-    for (int i = 0; i < Node::countNodes; i++) {
+    while (el != nullptr) {
         fprintf(fLog, "%d;\t", el->nameNode);
         el = el->prev;
     }
@@ -264,12 +263,38 @@ void LinkedList::writeToFileFromHead() {
     FILE* fLog;
     fLog = fopen("result_task6.txt", "a");
     Node* el = Head;
-    for (int i = 0; i < Node::countNodes; i++) {
+    while (el->next != nullptr) {
         fprintf(fLog, "%d;\t", el->nameNode);
         el = el->next;
     }
     fprintf(fLog, "\n");
     fclose(fLog);
+}
+
+int& LinkedList::operator[](int index) {
+    Node* el = Head;
+    assert(index >= 0);
+    for (int i = 0; i < index; i++) {
+        assert(el != nullptr);
+        el = el->next;
+    }
+    return el->nameNode;
+}
+
+bool LinkedList::operator==(const LinkedList& el1) {
+    LinkedList& el2 = (LinkedList&)el1;
+    if (size == el2.size && size == 0)
+        return true;
+    if (size != el2.size)
+        return false;
+    bool ok = true;
+    Node* el = Head;
+    for (int i = 0; el != nullptr; i++) {
+        if (el->nameNode != el2[i])
+            ok = false;
+        el = el->next;
+    }
+    return ok;
 }
 
 // 8
