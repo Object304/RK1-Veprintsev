@@ -2,7 +2,6 @@
 #define _USE_MATH_DEFINES
 #include <fstream>
 #include <iostream>
-#include <locale>
 #include <cmath>
 #include <iomanip>
 #include <cstring>
@@ -103,6 +102,7 @@ public:
 // 9
 
 void task_9(void);
+
 template<class T>
 class IData {
 protected:
@@ -114,6 +114,9 @@ public:
 		return false;
 	}
 	virtual bool getFromEnd(T& el) {
+		return false;
+	}
+	virtual bool getFromBegin(T& el) {
 		return false;
 	}
 	IData() {
@@ -147,4 +150,72 @@ public:
 		return true;
 	}
 };
+
+template<class T>
+class Fifo : public IData<T> {
+private:
+	void move() {
+		for (int i = 0; i < IData<T>::datalen; i++) {
+			IData<T>::ar[i] = IData<T>::ar[i + 1];
+		}
+	}
+public:
+	Fifo() : IData<T>() {}
+
+	bool addToEnd(T el) {
+		if (IData<T>::datalen == IData<T>::size1) {
+			return false;
+		}
+		IData<T>::ar[IData<T>::datalen++] = el;
+		return true;
+	}
+
+	bool getFromBegin(T& el) {
+		if (IData<T>::datalen == 0) {
+			return false;
+		}
+		el = IData<T>::ar[0];
+		IData<T>::datalen--;
+		move();
+		return true;
+	}
+};
+
+template<class T>
+class RingBuffer : public IData<T> {
+private:
+	int end = 0, begin = 0;
+public:
+	RingBuffer() : IData<T>() {}
+
+	bool addToEnd(T el) {
+		if (IData<T>::datalen == IData<T>::size1) {
+			return false;
+		}
+		IData<T>::ar[end++] = el;
+		IData<T>::datalen++;
+		if (end == IData<T>::size1) {
+			end = 0;
+		}
+		
+		return true;
+	}
+
+	bool getFromBegin(T& el) {
+		if (IData<T>::datalen == 0)
+			return false;
+		el = IData<T>::ar[begin++];
+		IData<T>::datalen--;
+		if (begin == IData<T>::size1) {
+			begin = 0;
+		}
+		return true;
+	}
+};
+
 bool check(string brack);
+
+// 10
+
+void task_10(void);
+void frameWork(void);

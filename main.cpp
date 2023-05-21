@@ -102,6 +102,10 @@ void task_9(void) {
     cout << s5 << " -- " << boolalpha << check(s5) << endl;
 }
 
+void task_10(void) {
+    frameWork();
+}
+
 int main()
 {
     task_1();
@@ -113,5 +117,6 @@ int main()
     task_7();
     task_8();
     task_9();
+    task_10();
     return 0;
 }

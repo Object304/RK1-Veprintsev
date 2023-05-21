@@ -426,3 +426,116 @@ bool check(string s) {
         return false;
     return true;
 }
+
+// 10
+
+void frameWork() {
+#ifdef FILO_MEMORY_LEAK
+    /*
+
+    test_MEMORY_LEAK - Filo 
+
+    */
+    while (true) {
+        Filo<int> filoStack;
+        filoStack.addToEnd(99);
+    }
+#endif
+#ifdef FIFO_MEMORY_LEAK
+    /*
+
+    test_MEMORY_LEAK - Fifo 
+
+    */
+    while (true) {
+        Fifo<int> filoStack;
+        filoStack.addToEnd(99);
+    }
+#endif
+#ifdef RING_BUFFER_MEMORY_LEAK
+    /*
+
+    test_MEMORY_LEAK - Ring Buffer 
+
+    */
+    while (true) {
+        RingBuffer<int> filoStack;
+        filoStack.addToEnd(99);
+    }
+#endif
+    /*
+
+    test - Filo (fullfilling, overfilling, output)
+
+    */
+    Filo<int> filoStack;
+    {
+        int ar[16] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ,12, 13, 14, 15, 16 };
+        int ans[16];
+        for (int i = 0; i < 16; i++) {
+            filoStack.addToEnd(ar[i]);
+        }
+        filoStack.addToEnd(999);
+        for (int i = 0; i < 16; i++) {
+            filoStack.getFromEnd(ans[i]);
+        }
+        bool ok = true;
+        for (int i = 0, j = 15; i < 16; i++, j--) {
+            if (ans[j] != ar[i])
+                ok = false;
+        }
+        if (ok) {
+            cout << "Filo - test is OK" << endl;
+        }
+    }
+    /*
+
+    test - Fifo (fullfilling, overfilling, output)
+
+    */
+    Fifo<int> fifoStack;
+    {
+        int ar[16] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ,12, 13, 14, 15, 16 };
+        int ans[16];
+        for (int i = 0; i < 16; i++) {
+            fifoStack.addToEnd(ar[i]);
+        }
+        fifoStack.addToEnd(999);
+        for (int i = 0; i < 16; i++) {
+            fifoStack.getFromBegin(ans[i]);
+        }
+        bool ok = true;
+        for (int i = 0; i < 16; i++) {
+            if (ans[i] != ar[i])
+                ok = false;
+        }
+        if (ok) {
+            cout << "Fifo - test is OK" << endl;
+        }
+    }
+    /*
+
+    test - RingBuffer (fullfilling, overfilling, output)
+
+    */
+    RingBuffer<int> RingBuf;
+    {
+        int ar[16] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ,12, 13, 14, 15, 16 };
+        int ans[16];
+        for (int i = 0; i < 16; i++) {
+            RingBuf.addToEnd(ar[i]);
+        }
+        RingBuf.addToEnd(999);
+        for (int i = 0; i < 16; i++) {
+            RingBuf.getFromBegin(ans[i]);
+        }
+        bool ok = true;
+        for (int i = 0; i < 16; i++) {
+            if (ans[i] != ar[i])
+                ok = false;
+        }
+        if (ok) {
+            cout << "RingBuffer - test is OK" << endl;
+        }
+    }
+}
