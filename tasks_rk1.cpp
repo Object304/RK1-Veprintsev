@@ -56,7 +56,7 @@ void WorkWithFile::writeStatInfoToFile(const char* outFile) {
 
 char* convertDecToBin(int number) {
     int c[64], j = 0;
-    unsigned __int64 a = number;
+    unsigned int a = number;
     for (int i = 64; i > 0; i--) {
         c[j] = (a & 1);
         a = a >> 1;
